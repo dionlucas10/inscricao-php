@@ -27,18 +27,28 @@ body {
    ============================================ */
 
 header.bg-gradient {
-    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding-top: 2rem;
+    padding-bottom: 2rem;
 }
 
 header h1 {
     letter-spacing: 0.5px;
+    font-size: 2.5rem;
 }
 
 header .lead {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 300;
     opacity: 0.95;
+}
+
+header .logo-cabecalho {
+    max-width: 140px;
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto 1rem auto;
 }
 
 /* ============================================
@@ -225,10 +235,10 @@ main {
 }
 
 /* ============================================
-   ENTREPRENEUR SECTION
+   SEÇÃO EMPREENDEDOR
    ============================================ */
 
-#entrepreneurFields {
+#camposEmpreendedor {
     animation: slideDown 0.3s ease-out;
 }
 
@@ -276,14 +286,14 @@ main {
 }
 
 /* ============================================
-   SUMMARY STYLES
+   ESTILOS DO RESUMO
    ============================================ */
 
-.summary-section {
+.resumo-secao {
     margin-bottom: 1.5rem;
 }
 
-.summary-section h6 {
+.resumo-secao h6 {
     color: var(--primary-color);
     font-weight: 600;
     margin-bottom: 0.75rem;
@@ -292,28 +302,28 @@ main {
     letter-spacing: 0.5px;
 }
 
-.summary-item {
+.resumo-item {
     padding: 0.75rem 0;
     border-bottom: 1px solid #dee2e6;
 }
 
-.summary-item:last-child {
+.resumo-item:last-child {
     border-bottom: none;
 }
 
-.summary-label {
+.rotulo-resumo {
     font-weight: 600;
     color: #495057;
     display: block;
     margin-bottom: 0.25rem;
 }
 
-.summary-value {
+.valor-resumo {
     color: #212529;
     font-size: 1rem;
 }
 
-.summary-success {
+.resumo-sucesso {
     background-color: #d1e7dd;
     color: #0f5132;
     padding: 0.75rem 1rem;
@@ -323,7 +333,7 @@ main {
     align-items: center;
 }
 
-.summary-success i {
+.resumo-sucesso i {
     margin-right: 0.75rem;
     font-size: 1.2rem;
 }
@@ -409,7 +419,7 @@ footer {
         font-size: 1.5rem;
     }
 
-    .summary-value {
+    .valor-resumo {
         font-size: 0.9rem;
     }
 }

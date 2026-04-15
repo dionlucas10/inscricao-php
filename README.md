@@ -1,409 +1,84 @@
-# TechConf 2026 - Sistema de Inscrições
-
-Sistema completo de inscrições para o TechConf 2026 com painel administrativo.
-
-## 🚀 Funcionalidades
-
-### Para Participantes
-- ✅ Formulário de inscrição completo
-- ✅ Validação de dados em tempo real
-- ✅ Seleção de interesses e tipo de participante
-- ✅ Campos específicos para empreendedores
-
-### Para Administradores
-- ✅ **Login seguro** com autenticação
-- ✅ **Dashboard** com estatísticas
-- ✅ **Gerenciar inscrições** (visualizar, editar, excluir)
-- ✅ **Filtros e busca** avançada
-- ✅ **Paginação** para grandes volumes
-- ✅ **Exportação** de dados
-- ✅ **Controle de permissões** (admin/editor)
-
-## 📋 Requisitos
-
-- **XAMPP** (ou similar com Apache + MySQL + PHP)
-- **PHP 7.4+**
-- **MySQL 5.7+**
-- **Navegador moderno**
-
-## 🛠️ Instalação
-
-### 1. Configurar XAMPP
-1. Instale o XAMPP
-2. Inicie **Apache** e **MySQL**
-3. Copie o projeto para `C:\xampp\htdocs\login-project\`
-
-### 2. Acessar o Sistema
-- **Site público:** http://localhost/login-project/
-- **Painel admin:** http://localhost/login-project/admin-login.php
-
-### 3. Primeiro Acesso Admin
-- **Usuário:** admin
-- **Senha:** admin123
-
-## 📊 Estrutura do Banco
-
-### Tabela `inscricoes`
-```sql
-CREATE TABLE inscricoes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    telefone VARCHAR(20) NOT NULL,
-    cidade VARCHAR(50) NOT NULL,
-    tipo_participante VARCHAR(50) NOT NULL,
-    interesses JSON,
-    mensagem TEXT,
-    data_inscricao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-### Tabela `usuarios`
-```sql
-CREATE TABLE usuarios (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    usuario VARCHAR(50) NOT NULL UNIQUE,
-    senha VARCHAR(255) NOT NULL,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    nivel ENUM('admin', 'editor') DEFAULT 'editor',
-    ativo BOOLEAN DEFAULT TRUE,
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-## 🔐 Níveis de Acesso
-
-- **admin:** Acesso total (incluindo exclusão)
-- **editor:** Visualizar e editar inscrições
-
-## 📁 Estrutura do Projeto
-
-```
-login-project/
-├── index.php              # Página principal de inscrição
-├── admin-login.php        # Página de login admin
-├── config.php             # Configurações do banco
-├── debug.php              # Página de debug (remover em produção)
-├── teste-simples.php      # Teste simples (remover em produção)
-├── admin/                 # Painel administrativo
-│   ├── auth.php           # Controle de autenticação
-│   ├── dashboard.php      # Dashboard principal
-│   ├── inscricoes.php     # Lista de inscrições
-│   ├── ver-inscricao.php  # Ver detalhes
-│   ├── editar-inscricao.php # Editar inscrição
-│   ├── excluir-inscricao.php # Excluir inscrição
-│   └── logout.php         # Logout
-├── assets/
-│   ├── css/
-│   │   └── style.css      # Estilos CSS
-│   └── js/
-│       └── script.js      # JavaScript do formulário
-└── README.md
-```
+﻿# TechConf 2026 - Sistema de Inscrição
 
-## 🎯 Como Usar
+Este repositório abriga uma aplicação de inscrição para a TechConf 2026. O objetivo do projeto é oferecer um fluxo de cadastro claro, acessível e seguro para participantes do evento, desde a apresentação inicial até a confirmação do registro.
 
-### Para Participantes
-1. Acesse http://localhost/login-project/
-2. Preencha o formulário completo
-3. Selecione pelo menos 1 interesse
-4. Aceite os termos
-5. Clique em "Enviar Inscrição"
+## Visão Geral do Processo
 
-### Para Administradores
-1. Acesse http://localhost/login-project/admin-login.php
-2. Use usuário: `admin` / senha: `admin123`
-3. No dashboard, veja estatísticas
-4. Gerencie inscrições através do menu
+1. O visitante acessa a página principal e encontra a apresentação do evento, com informações sobre datas, local e público-alvo.
+2. O formulário reúne dados essenciais do participante: nome, e-mail, telefone, cidade, tipo de participante e interesses.
+3. A validação do formulário ocorre em duas camadas:
+   - no navegador, por meio de `assets/js/script.js`, para melhorar a experiência do usuário com mensagens diretas e controle de limites;
+   - no servidor, em `index.php`, para garantir que apenas dados completos e válidos sejam enviados ao banco de dados.
+4. Os dados são persistidos em um banco de dados MySQL usando `config.php` para a conexão.
+5. O usuário recebe um retorno visual imediato: mensagem de sucesso quando a inscrição é registrada ou mensagem de erro quando há inconsistências.
 
-## 🔧 Desenvolvimento
+## Componentes Principais
 
-### Adicionar Novos Usuários
-Execute no phpMyAdmin:
-```sql
-INSERT INTO usuarios (usuario, senha, nome, email, nivel)
-VALUES ('novo_usuario', '$2y$10$...', 'Nome Completo', 'email@exemplo.com', 'editor');
-```
+- `index.php`
+  - Controla a renderização da página e o processamento do formulário.
+  - Carrega as listas de cidades, tipos de participantes e temas de interesse.
+  - Executa a validação básica do formulário e gravar os dados no banco de dados.
+  - Retorna feedback ao usuário por meio de alertas visuais.
 
-### Personalizar Campos
-- Edite `index.php` para alterar campos do formulário
-- Atualize `config.php` para modificar estrutura do banco
-- Ajuste `admin/editar-inscricao.php` para novos campos
+- `config.php`
+  - Contém as configurações de conexão com o banco de dados MySQL.
+  - Centraliza credenciais e parâmetros de acesso ao servidor de banco de dados.
 
-## 🚨 Segurança
-
-- ✅ Senhas criptografadas com `password_hash()`
-- ✅ Prepared statements contra SQL injection
-- ✅ Sessões seguras
-- ✅ Controle de permissões
-- ✅ Validação de entrada
-
-## 📞 Suporte
-
-Para dúvidas ou problemas:
-1. Verifique se Apache e MySQL estão rodando
-2. Confirme que as tabelas foram criadas
-3. Use `debug.php` para diagnosticar problemas
-4. Verifique logs do XAMPP
+- `assets/js/script.js`
+  - Faz a validação interativa do formulário no lado do cliente.
+  - Limita a seleção de interesses a no máximo três opções.
+  - Atualiza a contagem de caracteres do campo de mensagem.
+  - Exibe um modal com resumo da inscrição antes do envio final.
 
----
-
-**TechConf 2026** - Transformando tecnologia em conhecimento! 🚀
-├── assets/
-│   ├── css/
-│   │   └── style.css        # Estilos customizados
-│   └── js/
-│       └── script.js         # Interações JavaScript
-└── README.md                 # Este arquivo
-```
+- `assets/css/style.css`
+  - Define o estilo visual da aplicação, com foco em legibilidade, consistência e usabilidade.
+  - Ajusta botões, formulários, cards e layout para uma apresentação profissional.
 
----
+## Estrutura de Dados e Banco de Dados
 
-## 🚀 Como Executar
+O projeto espera um banco de dados instalado e acessível pelo servidor local. A tabela principal registra as inscrições do evento e deve ser preparada conforme necessário.
 
-### Pré-requisitos
+### Configuração recomendada
 
-- **PHP 7.4+** instalado
-- **Servidor Web** (Apache, Nginx, etc.) ou usar servidor embutido do PHP
-- **Navegador Web** moderno (Chrome, Firefox, Edge, Safari)
-
-### Opção 1: Usar Servidor Embutido do PHP (Recomendado para Testes)
+- `servername`: `localhost`
+- `username`: `root`
+- `password`: `` (senha vazia, padrão do XAMPP)
+- `dbname`: `tela_login`
 
-1. Clone ou baixe o projeto
-2. Abra o terminal na pasta do projeto
-3. Execute:
+> Ajuste `config.php` caso o ambiente local utilize credenciais diferentes.
 
-```bash
-php -S localhost:8000
-```
+## Como Instalar e Executar
 
-4. Abra seu navegador e acesse: `http://localhost:8000`
-
-### Opção 2: Usar com Apache
+1. Copie todos os arquivos para a pasta do servidor local, por exemplo, `C:\xampp\htdocs\login-project`.
+2. Crie o banco de dados MySQL e a tabela de inscrições.
+3. Atualize `config.php` com os dados corretos de conexão.
+4. Acesse `http://localhost/login-project` no navegador.
+5. Preencha o formulário e envie a inscrição.
 
-1. Copie a pasta do projeto para a raiz web (geralmente `htdocs` no XAMPP)
-2. Acesse via: `http://localhost/login-project`
+## Experiência do Usuário
 
-### Opção 3: Usar com Nginx
+A aplicação foi projetada para ser acessível e acolhedora. O usuário recebe orientações claras em cada etapa, como:
 
-Configure um virtual host apontando para a pasta do projeto e acesse conforme configurado.
+- campos obrigatórios marcados com asterisco;
+- seleção de cidade e tipo de participante com opções predefinidas;
+- limite visualizado de interesses selecionados;
+- contagem de caracteres do campo de mensagem;
+- confirmação de inscrição com resposta direta e amigável.
 
----
+## Qualidade e Segurança
 
-## 📝 Campos do Formulário
+O sistema adota práticas básicas de segurança e qualidade:
 
-| Campo | Tipo | Obrigatório | Descrição |
-|-------|------|-------------|-----------|
-| Nome Completo | Text | ✅ | Nome do participante |
-| E-mail | Email | ✅ | E-mail de contato |
-| Telefone | Tel | ✅ | Telefone com máscara |
-| Cidade | Select | ✅ | Seleção de 7 cidades |
-| Tipo de Participante | Select | ✅ | Estudante, Profissional, Empreendedor ou Entusiasta |
-| Interesses | Checkbox (até 3) | ✅ | Áreas de interesse no evento |
-| Nome da Empresa | Text | Se Empreendedor | Dinamicamente obrigatório |
-| Área de Atuação | Text | Se Empreendedor | Dinamicamente obrigatório |
-| Mensagem/Observações | Textarea | ❌ | Até 500 caracteres |
-| Aceitar Termos | Checkbox | ✅ | Aceite dos termos e condições |
+- uso de prepared statements em `index.php` para evitar injeção de SQL;
+- sanitização e `trim()` dos dados antes do processamento;
+- feedback de erro claro para problemas de conexão ou inserção no banco de dados.
 
----
+## Considerações Finais
 
-## 🎯 Interações JavaScript Implementadas
+O projeto demonstra um fluxo completo de inscrição que integra front-end e back-end de forma coesa. Ele enfatiza a clareza para o participante, a confiabilidade no processamento e a organização do código para facilitar manutenção futura.
 
-### 1. **Seleção de Tipo de Participante**
-- Ao selecionar "Empreendedor", campos adicionais aparecem com animação
-- Campos extras: Nome da Empresa e Área de Atuação
-- Validação automática desses campos se empreendedor selecionado
+## Logo do Projeto
 
-### 2. **Seleção de Interesses Limitada**
-- Máximo de 3 interesses selecionáveis
-- Checkbox desativa automaticamente ao atingir limite
-- Mensagem de feedback ao usuário
-- Contador visual do progresso (0/3)
+Abaixo está a logo que representa a identidade visual do evento:
 
-### 3. **Contador de Caracteres**
-- Monitoramento em tempo real do campo de mensagem
-- Limite máximo de 500 caracteres
-- Visual feedback (cor vermelha quando perto do limite)
-- Impede digitação além do limite
-
-### 4. **Visualizar Resumo**
-- Botão "Visualizar Resumo" exibe modal com dados preenchidos
-- Resumo formatado e organizado por seções
-- Sem envio real do formulário
-- Permite editar novamente
-
-### 5. **Validação em Tempo Real**
-- Validação HTML5 nativa
-- Validação customizada em JavaScript
-- Feedbacks visuais (cores, mensagens)
-- Suporte a requiredinterpretação de campos dinâmicos
-
----
-
-## 🔄 Fluxo de Uso
-
-1. Usuário acessa a página
-2. Lê a apresentação do evento
-3. Preenche o formulário de inscrição
-4. Sistema exibe feedback em tempo real
-5. Clica em "Visualizar Resumo"
-6. Modal exibe todos os dados para confirmação
-7. Pode editar ou finalizar
-
----
-
-## 🎨 Customização
-
-### Alterar Cores Primárias
-
-Edite `assets/css/style.css`:
-
-```css
-:root {
-    --primary-color: #0d6efd;      /* Azul principal */
-    --secondary-color: #6c757d;    /* Cinza */
-    --success-color: #198754;      /* Verde */
-    --danger-color: #dc3545;       /* Vermelho */
-    --info-color: #0dcaf0;         /* Ciano */
-}
-```
-
-### Adicionar Mais Cidades
-
-Edite `index.php`, no array `$cidades`:
-
-```php
-$cidades = [
-    'sao-paulo' => 'São Paulo',
-    'rio-janeiro' => 'Rio de Janeiro',
-    // Adicione mais cidades aqui
-];
-```
-
-### Modificar Mensagem de Evento
-
-Edite a seção "Sobre o Evento" no `index.php`.
-
----
-
-## 💡 Detalhes Técnicos
-
-### PHP
-
-- **Uso de Arrays com foreach**: Renderização de seletores (cidades, tipos de participante, interesses)
-- **Segurança**: Nenhum processamento de dados backend (conforme requisito)
-- **Estrutura Semântica**: HTML5 com tags semânticas apropriadas
-
-### JavaScript
-
-- **Sem Dependências Externas**: JavaScript puro (Vanilla JS)
-- **Event Listeners**: Delegação eficiente de eventos
-- **DOM Manipulation**: Controle completo do DOM
-- **Validação Customizada**: Além das validações HTML5
-- **LocalStorage Ready**: Estrutura pronta para persistência (se necessário)
-
-### CSS
-
-- **Mobile-First**: Abordagem responsiva
-- **Flexbox & Grid**: Layouts modernos
-- **Media Queries**: Breakpoints definidos
-
----
-
-## 🧪 Testando Funcionalidades
-
-### Teste 1: Seleção de Empreendedor
-1. Selecione "Empreendedor" no dropdown "Tipo de Participante"
-2. **Esperado**: Seção azul aparece com campos de empresa
-
-### Teste 2: Limite de Interesses
-1. Tente selecionar 4 interesses
-2. **Esperado**: 4º checkbox não marca, mensagem de erro aparece
-
-### Teste 3: Contador de Caracteres
-1. Digite no campo de mensagem
-2. **Esperado**: Contador atualiza, campo fica vermelho perto de 500
-
-### Teste 4: Visualizar Resumo
-1. Preencha campos obrigatórios
-2. Clique "Visualizar Resumo"
-3. **Esperado**: Modal exibe todos os dados formatados
-
-### Teste 5: Responsividade
-1. Abra em desktop (1920px)
-2. Redimensione para tablet (768px)
-3. Redimensione para mobile (375px)
-4. **Esperado**: Layout se adapta perfeitamente
-
----
-
-## 📱 Compatibilidade
-
-| Navegador | Desktop | Mobile |
-|-----------|---------|--------|
-| Chrome | ✅ | ✅ |
-| Firefox | ✅ | ✅ |
-| Safari | ✅ | ✅ |
-| Edge | ✅ | ✅ |
-| Opera | ✅ | ✅ |
-
----
-
-## 🚫 Limitações Propositais
-
-- ❌ Não salva em banco de dados
-- ❌ Não faz envio real de e-mail
-- ❌ Não requer autenticação
-- ❌ Não integra com APIs externas
-- ❌ Dados não persistem após refresh (por design)
-
----
-
-## 📧 Próximos Passos (Sugestões)
-
-Se fosse um projeto em produção:
-
-1. Implementar backend para salvar dados em banco
-2. Adicionar envio de e-mail de confirmação
-3. Integrar com sistema de pagamento
-4. Implementar autenticação
-5. Adicionar dashboard administrativo
-6. Implementar confirmação por e-mail
-7. Adicionar CAPTCHA para segurança
-
----
-
-## 👨‍💻 Desenvolvido por
-
-**Seu Nome / Seu GitHub**
-
----
-
-## 📄 Licença
-
-Este projeto é fornecido como teste técnico e pode ser usado livremente.
-
----
-
-## 🤝 Suporte
-
-Para dúvidas ou issues:
-1. Verifique se o PHP está instalado (`php -v`)
-2. Limpe o cache do navegador (Ctrl + Shift + Del)
-3. Teste em outro navegador
-4. Verifique o console do navegador (F12) para erros JavaScript
-
----
-
-## ✨ Agradecimentos
-
-Desenvolvido com ❤️ usando as melhores práticas web modernas.
-
-Bootstrap 5 - https://getbootstrap.com
-Bootstrap Icons - https://icons.getbootstrap.com
-
----
-
-**Entrega:** Quarta-feira, 15/04/2026
-**Status:** ✅ Completo e Pronto para Uso
+![Logo TechConf 2026](assets/img/logo1.png)

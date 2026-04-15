@@ -1,6 +1,6 @@
 <?php
 // Conexão com banco de dados
-require_once 'config.php';
+require_once __DIR__ . '/config.php';
 
 // Variáveis para mensagens
 $mensagem = '';
@@ -8,13 +8,17 @@ $tipo_mensagem = '';
 
 // Processar formulário quando enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = trim($_POST['fullName'] ?? '');
+    $nome = trim($_POST['nomeCompleto'] ?? '');
     $email = trim($_POST['email'] ?? '');
-    $telefone = trim($_POST['phone'] ?? '');
-    $cidade = trim($_POST['city'] ?? '');
-    $tipo_participante = trim($_POST['participantType'] ?? '');
-    $interesses = isset($_POST['interesses']) ? json_encode($_POST['interesses']) : '[]';
-    $mensagem_texto = trim($_POST['message'] ?? '');
+    $telefone = trim($_POST['telefone'] ?? '');
+    $cidade = trim($_POST['cidade'] ?? '');
+    $tipo_participante = trim($_POST['tipoParticipante'] ?? '');
+    $interessesData = $_POST['interesses'] ?? [];
+    if (!is_array($interessesData)) {
+        $interessesData = [$interessesData];
+    }
+    $interesses = json_encode(array_values($interessesData));
+    $mensagem_texto = trim($_POST['mensagem'] ?? '');
     
     // Validação básica
     if (empty($nome) || empty($email) || empty($telefone) || empty($cidade) || empty($tipo_participante)) {
@@ -84,10 +88,9 @@ $cidades = [
 <body>
     <div class="container-fluid min-vh-100 d-flex flex-column">
         <!-- Header -->
-        <header class="bg-gradient py-5 text-white">
-            <div class="container">
-                <h1 class="display-4 fw-bold mb-2">TechConf 2026</h1>
-                <p class="lead mb-0">A Maior Conferência de Tecnologia do Brasil</p>
+        <header class="bg-gradient py-4 text-white">
+            <div class="container text-center">
+                <img src="./assets/img/logo1.png" alt="Logo TechConf" class="logo-cabecalho mb-3">
             </div>
         </header>
 
@@ -170,17 +173,17 @@ $cidades = [
                                     <i class="bi bi-clipboard-check"></i> Formulário de Inscrição
                                 </h2>
 
-                                <form id="registrationForm" method="POST">
-                                    <!-- Full Name -->
+                                <form id="formularioInscricao" method="POST">
+                                    <!-- Nome Completo -->
                                     <div class="mb-3">
-                                        <label for="fullName" class="form-label fw-semibold">Nome Completo *</label>
-                                        <input type="text" class="form-control" id="fullName" name="fullName" placeholder="Digite seu nome completo" required>
+                                        <label for="nomeCompleto" class="form-label fw-semibold">Nome Completo *</label>
+                                        <input type="text" class="form-control" id="nomeCompleto" name="nomeCompleto" placeholder="Digite seu nome completo" required>
                                         <div class="invalid-feedback">
                                             Por favor, informe seu nome completo.
                                         </div>
                                     </div>
 
-                                    <!-- Email -->
+                                    <!-- E-mail -->
                                     <div class="mb-3">
                                         <label for="email" class="form-label fw-semibold">E-mail *</label>
                                         <input type="email" class="form-control" id="email" name="email" placeholder="seu.email@exemplo.com" required>
@@ -189,19 +192,19 @@ $cidades = [
                                         </div>
                                     </div>
 
-                                    <!-- Phone -->
+                                    <!-- Telefone -->
                                     <div class="mb-3">
-                                        <label for="phone" class="form-label fw-semibold">Telefone *</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="(11) 99999-9999" required>
+                                        <label for="telefone" class="form-label fw-semibold">Telefone *</label>
+                                        <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="(11) 99999-9999" required>
                                         <div class="invalid-feedback">
                                             Por favor, informe um telefone válido.
                                         </div>
                                     </div>
 
-                                    <!-- City -->
+                                    <!-- Cidade -->
                                     <div class="mb-3">
-                                        <label for="city" class="form-label fw-semibold">Cidade *</label>
-                                        <select class="form-select" id="city" name="city" required>
+                                        <label for="cidade" class="form-label fw-semibold">Cidade *</label>
+                                        <select class="form-select" id="cidade" name="cidade" required>
                                             <option value="">Selecione uma cidade</option>
                                             <?php foreach ($cidades as $key => $cidade): ?>
                                                 <option value="<?php echo $key; ?>"><?php echo $cidade; ?></option>
@@ -212,10 +215,10 @@ $cidades = [
                                         </div>
                                     </div>
 
-                                    <!-- Participant Type -->
+                                    <!-- Tipo de Participante -->
                                     <div class="mb-3">
-                                        <label for="participantType" class="form-label fw-semibold">Tipo de Participante *</label>
-                                        <select class="form-select" id="participantType" name="participantType" required>
+                                        <label for="tipoParticipante" class="form-label fw-semibold">Tipo de Participante *</label>
+                                        <select class="form-select" id="tipoParticipante" name="tipoParticipante" required>
                                             <option value="">Selecione um tipo</option>
                                             <?php foreach ($tiposParticipantes as $key => $tipo): ?>
                                                 <option value="<?php echo $key; ?>"><?php echo $tipo; ?></option>
@@ -226,8 +229,8 @@ $cidades = [
                                         </div>
                                     </div>
 
-                                    <!-- Extra Fields for Entrepreneurs -->
-                                    <div id="entrepreneurFields" class="mb-3" style="display: none;">
+                                    <!-- Campos para Empreendedor -->
+                                    <div id="camposEmpreendedor" class="mb-3" style="display: none;">
                                         <div class="card bg-light border-info">
                                             <div class="card-body">
                                                 <h5 class="card-title mb-3 text-info">
@@ -235,29 +238,29 @@ $cidades = [
                                                 </h5>
                                                 
                                                 <div class="mb-3">
-                                                    <label for="companyName" class="form-label fw-semibold">Nome da Empresa</label>
-                                                    <input type="text" class="form-control" id="companyName" name="companyName" placeholder="Sua empresa">
+                                                    <label for="nomeEmpresa" class="form-label fw-semibold">Nome da Empresa</label>
+                                                    <input type="text" class="form-control" id="nomeEmpresa" name="nomeEmpresa" placeholder="Sua empresa">
                                                 </div>
 
                                                 <div class="mb-0">
-                                                    <label for="businessArea" class="form-label fw-semibold">Área de Atuação</label>
-                                                    <input type="text" class="form-control" id="businessArea" name="businessArea" placeholder="Ex: SaaS, E-commerce, etc.">
+                                                    <label for="areaAtuacao" class="form-label fw-semibold">Área de Atuação</label>
+                                                    <input type="text" class="form-control" id="areaAtuacao" name="areaAtuacao" placeholder="Ex: SaaS, E-commerce, etc.">
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Interests -->
+                                    <!-- Interesses -->
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold mb-3">
                                             Interesses no Evento (máximo 3 *) 
-                                            <span class="badge bg-info ms-2" id="interestCount">0/3</span>
+                                            <span class="badge bg-info ms-2" id="contagemInteresse">0/3</span>
                                         </label>
                                         <div class="row g-2">
                                             <?php foreach ($interesses as $key => $interesse): ?>
                                                 <div class="col-md-6">
                                                     <div class="form-check">
-                                                        <input class="form-check-input interest-checkbox" type="checkbox" id="interesse_<?php echo $key; ?>" name="interesses" value="<?php echo $key; ?>">
+                                                        <input class="form-check-input interesse-item" type="checkbox" id="interesse_<?php echo $key; ?>" name="interesses[]" value="<?php echo $key; ?>">
                                                         <label class="form-check-label" for="interesse_<?php echo $key; ?>">
                                                             <?php echo $interesse; ?>
                                                         </label>
@@ -265,25 +268,25 @@ $cidades = [
                                                 </div>
                                             <?php endforeach; ?>
                                         </div>
-                                        <div class="invalid-feedback d-block" id="interestError" style="display: none;">
+                                        <div class="invalid-feedback d-block" id="erroInteresse" style="display: none;">
                                             Selecione no máximo 3 interesses.
                                         </div>
                                     </div>
 
-                                    <!-- Message/Observations -->
+                                    <!-- Mensagem -->
                                     <div class="mb-3">
-                                        <label for="message" class="form-label fw-semibold">Mensagem/Observações</label>
-                                        <textarea class="form-control" id="message" name="message" rows="4" placeholder="Conte-nos sobre você, suas expectativas..."></textarea>
+                                        <label for="mensagem" class="form-label fw-semibold">Mensagem/Observações</label>
+                                        <textarea class="form-control" id="mensagem" name="mensagem" rows="4" placeholder="Conte-nos sobre você, suas expectativas..."></textarea>
                                         <div class="form-text mt-2">
-                                            <small id="charCount">0</small> / <small>500</small> caracteres
+                                            <small id="contagemCaracteres">0</small> / <small>500</small> caracteres
                                         </div>
                                     </div>
 
-                                    <!-- Terms Accept -->
+                                    <!-- Termos -->
                                     <div class="mb-4">
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
-                                            <label class="form-check-label" for="terms">
+                                            <input class="form-check-input" type="checkbox" id="termos" name="termos" required>
+                                            <label class="form-check-label" for="termos">
                                                 Aceito os <a href="#" class="text-decoration-none">termos e condições</a> do evento *
                                             </label>
                                             <div class="invalid-feedback">
@@ -292,9 +295,9 @@ $cidades = [
                                         </div>
                                     </div>
 
-                                    <!-- Buttons -->
+                                    <!-- Botões -->
                                     <div class="d-grid gap-2 d-md-flex">
-                                        <button type="button" id="summaryBtn" class="btn btn-outline-primary btn-lg">
+                                        <button type="button" id="botaoResumo" class="btn btn-outline-primary btn-lg">
                                             <i class="bi bi-eye"></i> Visualizar Resumo
                                         </button>
                                         <button type="submit" class="btn btn-success btn-lg">
@@ -314,33 +317,24 @@ $cidades = [
 
         <!-- Footer -->
         <footer class="bg-dark text-white mt-5 py-4">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <p class="mb-0">&copy; 2026 TechConf. Todos os direitos reservados.</p>
-                    </div>
-                    <div class="col-md-6 text-end">
-                        <a href="admin-login.php" class="text-light text-decoration-none">
-                            <i class="bi bi-shield-lock"></i> Painel Administrativo
-                        </a>
-                    </div>
-                </div>
+            <div class="container text-center">
+                <p class="mb-0">&copy; 2026 TechConf. Todos os direitos reservados.</p>
             </div>
         </footer>
     </div>
 
-    <!-- Summary Modal -->
-    <div class="modal fade" id="summaryModal" tabindex="-1" aria-labelledby="summaryModalLabel" aria-hidden="true">
+    <!-- Modal de Resumo -->
+    <div class="modal fade" id="modalResumo" tabindex="-1" aria-labelledby="rotuloModalResumo" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="summaryModalLabel">
+                    <h5 class="modal-title" id="rotuloModalResumo">
                         <i class="bi bi-check-circle"></i> Resumo da Sua Inscrição
                     </h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="summaryContent">
-                    <!-- Filled by JavaScript -->
+                <div class="modal-body" id="conteudoResumo">
+                    <!-- Preenchido pelo JavaScript -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Editar Inscrição</button>

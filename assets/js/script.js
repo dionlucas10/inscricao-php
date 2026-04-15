@@ -1,5 +1,5 @@
 /* ============================================
-   REGISTRATION FORM - JAVASCRIPT INTERACTIONS
+   FORMULÁRIO DE INSCRIÇÃO - INTERAÇÕES JAVASCRIPT
    ============================================ */
 
 // Mapping for friendly display of values
@@ -29,81 +29,78 @@ const displayMaps = {
     }
 };
 
-// DOM Elements
-const form = document.getElementById('registrationForm');
-const participantTypeSelect = document.getElementById('participantType');
-const entrepreneurFields = document.getElementById('entrepreneurFields');
-const interestCheckboxes = document.querySelectorAll('.interest-checkbox');
-const interestCount = document.getElementById('interestCount');
-const interestError = document.getElementById('interestError');
-const messageTextarea = document.getElementById('message');
-const charCount = document.getElementById('charCount');
-const summaryBtn = document.getElementById('summaryBtn');
-const summaryModal = new bootstrap.Modal(document.getElementById('summaryModal'));
-const summaryContent = document.getElementById('summaryContent');
+// Elementos do DOM
+const formularioInscricao = document.getElementById('formularioInscricao');
+const tipoParticipanteSelect = document.getElementById('tipoParticipante');
+const camposEmpreendedor = document.getElementById('camposEmpreendedor');
+const checkboxesInteresse = document.querySelectorAll('.interesse-item');
+const contagemInteresse = document.getElementById('contagemInteresse');
+const erroInteresse = document.getElementById('erroInteresse');
+const textareaMensagem = document.getElementById('mensagem');
+const contagemCaracteres = document.getElementById('contagemCaracteres');
+const botaoResumo = document.getElementById('botaoResumo');
+const modalResumo = new bootstrap.Modal(document.getElementById('modalResumo'));
+const conteudoResumo = document.getElementById('conteudoResumo');
 
 // ============================================
 // EVENT LISTENERS
 // ============================================
 
 // Participant Type Change - Show/Hide Entrepreneur Fields
-participantTypeSelect.addEventListener('change', function() {
+tipoParticipanteSelect.addEventListener('change', function() {
     if (this.value === 'empreendedor') {
-        entrepreneurFields.style.display = 'block';
-        // Add required to company name when entrepreneur is selected
-        document.getElementById('companyName').setAttribute('required', '');
-        document.getElementById('businessArea').setAttribute('required', '');
+        camposEmpreendedor.style.display = 'block';
+        // Exigir campos do empreendedor quando selecionado
+        document.getElementById('nomeEmpresa').setAttribute('required', '');
+        document.getElementById('areaAtuacao').setAttribute('required', '');
     } else {
-        entrepreneurFields.style.display = 'none';
-        // Remove required from company name when not entrepreneur
-        document.getElementById('companyName').removeAttribute('required');
-        document.getElementById('businessArea').removeAttribute('required');
+        camposEmpreendedor.style.display = 'none';
+        // Remover obrigatoriedade quando não for empreendedor
+        document.getElementById('nomeEmpresa').removeAttribute('required');
+        document.getElementById('areaAtuacao').removeAttribute('required');
     }
 });
 
-// Interest Checkboxes - Max 3 Selection
-interestCheckboxes.forEach(checkbox => {
+// Seleção de interesses - máximo 3
+checkboxesInteresse.forEach(checkbox => {
     checkbox.addEventListener('change', function() {
-        const checkedCount = document.querySelectorAll('.interest-checkbox:checked').length;
+        const totalMarcados = document.querySelectorAll('.interesse-item:checked').length;
 
-        // If trying to select more than 3, uncheck this one
-        if (checkedCount > 3) {
+        if (totalMarcados > 3) {
             this.checked = false;
-            interestError.style.display = 'block';
+            erroInteresse.style.display = 'block';
             setTimeout(() => {
-                interestError.style.display = 'none';
+                erroInteresse.style.display = 'none';
             }, 3000);
             return;
         }
 
-        // Update counter
-        updateInterestCount();
+        atualizarContagemInteresse();
     });
 });
 
-function updateInterestCount() {
-    const checkedCount = document.querySelectorAll('.interest-checkbox:checked').length;
-    interestCount.textContent = `${checkedCount}/3`;
+function atualizarContagemInteresse() {
+    const checkedCount = document.querySelectorAll('.interesse-item:checked').length;
+    contagemInteresse.textContent = `${checkedCount}/3`;
 
-    // Add visual feedback
     if (checkedCount === 3) {
-        interestCount.classList.add('bg-success');
-        interestCount.classList.remove('bg-info');
+        contagemInteresse.classList.add('bg-success');
+        contagemInteresse.classList.remove('bg-info');
     } else {
-        interestCount.classList.remove('bg-success');
-        interestCount.classList.add('bg-info');
+        contagemInteresse.classList.remove('bg-success');
+        contagemInteresse.classList.add('bg-info');
     }
 }
 
-// Message Character Counter
-messageTextarea.addEventListener('input', function() {
+// Contador de caracteres da mensagem
+textareaMensagem.addEventListener('input', function() {
     const currentLength = this.value.length;
-    charCount.textContent = currentLength;
+    contagemCaracteres.textContent = currentLength;
 
     // Truncate if exceeds 500 characters
     if (currentLength > 500) {
         this.value = this.value.substring(0, 500);
-        charCount.textContent = '500';
+        contagemCaracteres.textContent = '500';
     }
 
     // Visual feedback
@@ -115,10 +112,10 @@ messageTextarea.addEventListener('input', function() {
 });
 
 // Summary Button
-summaryBtn.addEventListener('click', function() {
+botaoResumo.addEventListener('click', function() {
     if (validateForm()) {
         displaySummary();
-        summaryModal.show();
+        modalResumo.show();
     }
 });
 
@@ -127,29 +124,29 @@ summaryBtn.addEventListener('click', function() {
 // ============================================
 
 function validateForm() {
-    const isValid = form.checkValidity() === false ? false : true;
+    const isValid = formularioInscricao.checkValidity() === false ? false : true;
 
     // Custom validations
-    const interestCheckboxCount = document.querySelectorAll('.interest-checkbox:checked').length;
+    const interestCheckboxCount = document.querySelectorAll('.interesse-item:checked').length;
 
     if (interestCheckboxCount === 0) {
-        interestError.textContent = 'Selecione pelo menos um interesse.';
-        interestError.style.display = 'block';
+        erroInteresse.textContent = 'Selecione pelo menos um interesse.';
+        erroInteresse.style.display = 'block';
         return false;
     }
 
     if (interestCheckboxCount > 3) {
-        interestError.textContent = 'Selecione no máximo 3 interesses.';
-        interestError.style.display = 'block';
+        erroInteresse.textContent = 'Selecione no máximo 3 interesses.';
+        erroInteresse.style.display = 'block';
         return false;
     }
 
-    interestError.style.display = 'none';
+    erroInteresse.style.display = 'none';
 
     // Validate entrepreneur fields if entrepreneur is selected
-    if (participantTypeSelect.value === 'empreendedor') {
-        const companyName = document.getElementById('companyName').value.trim();
-        const businessArea = document.getElementById('businessArea').value.trim();
+    if (tipoParticipanteSelect.value === 'empreendedor') {
+        const companyName = document.getElementById('nomeEmpresa').value.trim();
+        const businessArea = document.getElementById('areaAtuacao').value.trim();
 
         if (!companyName || !businessArea) {
             alert('Por favor, preencha os campos adicionais de empreendedor.');
@@ -158,7 +155,7 @@ function validateForm() {
     }
 
     if (!isValid) {
-        form.classList.add('was-validated');
+        formularioInscricao.classList.add('was-validated');
         return false;
     }
 
@@ -171,65 +168,65 @@ function validateForm() {
 
 function displaySummary() {
     // Get form values
-    const formData = new FormData(form);
+    const formData = new FormData(formularioInscricao);
     const data = Object.fromEntries(formData);
 
     // Get selected interests as array
-    const selectedInterests = Array.from(document.querySelectorAll('.interest-checkbox:checked'))
+    const selectedInterests = Array.from(document.querySelectorAll('.interesse-item:checked'))
         .map(checkbox => displayMaps.interesses[checkbox.value])
         .join(', ');
 
     // Get participant type display
-    const participantTypeDisplay = displayMaps.tiposParticipantes[data.participantType];
-    const cityDisplay = displayMaps.cidades[data.city];
+    const participantTypeDisplay = displayMaps.tiposParticipantes[data.tipoParticipante];
+    const cityDisplay = displayMaps.cidades[data.cidade];
 
     // Build summary HTML
     let summaryHTML = `
-        <div class="summary-success">
+        <div class="resumo-sucesso">
             <i class="bi bi-check-circle-fill"></i>
             <span>Inscrição revisada com sucesso! Todos os dados estão corretos.</span>
         </div>
 
-        <div class="summary-section">
+        <div class="resumo-secao">
             <h6><i class="bi bi-person-fill"></i> Dados Pessoais</h6>
-            <div class="summary-item">
-                <span class="summary-label">Nome Completo:</span>
-                <span class="summary-value">${escapeHtml(data.fullName)}</span>
+            <div class="resumo-item">
+                <span class="rotulo-resumo">Nome Completo:</span>
+                <span class="valor-resumo">${escapeHtml(data.nomeCompleto)}</span>
             </div>
-            <div class="summary-item">
-                <span class="summary-label">E-mail:</span>
-                <span class="summary-value">${escapeHtml(data.email)}</span>
+            <div class="resumo-item">
+                <span class="rotulo-resumo">E-mail:</span>
+                <span class="valor-resumo">${escapeHtml(data.email)}</span>
             </div>
-            <div class="summary-item">
-                <span class="summary-label">Telefone:</span>
-                <span class="summary-value">${escapeHtml(data.phone)}</span>
+            <div class="resumo-item">
+                <span class="rotulo-resumo">Telefone:</span>
+                <span class="valor-resumo">${escapeHtml(data.telefone)}</span>
             </div>
-            <div class="summary-item">
-                <span class="summary-label">Cidade:</span>
-                <span class="summary-value">${cityDisplay}</span>
+            <div class="resumo-item">
+                <span class="rotulo-resumo">Cidade:</span>
+                <span class="valor-resumo">${cityDisplay}</span>
             </div>
         </div>
 
-        <div class="summary-section">
+        <div class="resumo-secao">
             <h6><i class="bi bi-briefcase-fill"></i> Tipo de Participante</h6>
-            <div class="summary-item">
-                <span class="summary-label">Participante Como:</span>
-                <span class="summary-value">
+            <div class="resumo-item">
+                <span class="rotulo-resumo">Participante Como:</span>
+                <span class="valor-resumo">
                     <span class="badge bg-primary">${participantTypeDisplay}</span>
                 </span>
             </div>
     `;
 
     // Add entrepreneur info if applicable
-    if (data.participantType === 'empreendedor') {
+    if (data.tipoParticipante === 'empreendedor') {
         summaryHTML += `
-            <div class="summary-item">
-                <span class="summary-label">Nome da Empresa:</span>
-                <span class="summary-value">${escapeHtml(data.companyName || 'Não informado')}</span>
+            <div class="resumo-item">
+                <span class="rotulo-resumo">Nome da Empresa:</span>
+                <span class="valor-resumo">${escapeHtml(data.nomeEmpresa || 'Não informado')}</span>
             </div>
-            <div class="summary-item">
-                <span class="summary-label">Área de Atuação:</span>
-                <span class="summary-value">${escapeHtml(data.businessArea || 'Não informado')}</span>
+            <div class="resumo-item">
+                <span class="rotulo-resumo">Área de Atuação:</span>
+                <span class="valor-resumo">${escapeHtml(data.areaAtuacao || 'Não informado')}</span>
             </div>
         `;
     }
@@ -237,11 +234,11 @@ function displaySummary() {
     summaryHTML += `
         </div>
 
-        <div class="summary-section">
+        <div class="resumo-secao">
             <h6><i class="bi bi-star-fill"></i> Interesses</h6>
-            <div class="summary-item">
-                <span class="summary-label">Áreas de Interesse:</span>
-                <span class="summary-value">
+            <div class="resumo-item">
+                <span class="rotulo-resumo">Áreas de Interesse:</span>
+                <span class="valor-resumo">
                     ${selectedInterests}
                 </span>
             </div>
@@ -249,14 +246,14 @@ function displaySummary() {
     `;
 
     // Add message if provided
-    if (data.message && data.message.trim()) {
+    if (data.mensagem && data.mensagem.trim()) {
         summaryHTML += `
-            <div class="summary-section">
+            <div class="resumo-secao">
                 <h6><i class="bi bi-chat-left-text-fill"></i> Mensagem</h6>
-                <div class="summary-item">
-                    <span class="summary-label">Observações:</span>
-                    <span class="summary-value" style="word-break: break-word;">
-                        ${escapeHtml(data.message)}
+                <div class="resumo-item">
+                    <span class="rotulo-resumo">Observações:</span>
+                    <span class="valor-resumo" style="word-break: break-word;">
+                        ${escapeHtml(data.mensagem)}
                     </span>
                 </div>
             </div>
@@ -264,10 +261,10 @@ function displaySummary() {
     }
 
     summaryHTML += `
-        <div class="summary-section">
+        <div class="resumo-secao">
             <h6><i class="bi bi-clipboard-check-fill"></i> Aceites</h6>
-            <div class="summary-item">
-                <span class="summary-value">
+            <div class="resumo-item">
+                <span class="valor-resumo">
                     <i class="bi bi-check-circle-fill text-success"></i> 
                     Termos e condições aceitos
                 </span>
@@ -281,7 +278,7 @@ function displaySummary() {
         </div>
     `;
 
-    summaryContent.innerHTML = summaryHTML;
+    conteudoResumo.innerHTML = summaryHTML;
 }
 
 // ============================================
@@ -303,15 +300,15 @@ function escapeHtml(text) {
 // Reset Form
 function resetForm() {
     if (confirm('Tem certeza que deseja limpar todos os dados do formulário?')) {
-        form.reset();
-        form.classList.remove('was-validated');
-        entrepreneurFields.style.display = 'none';
-        charCount.textContent = '0';
-        interestCount.textContent = '0/3';
-        interestCount.classList.add('bg-info');
-        interestCount.classList.remove('bg-success');
-        interestError.style.display = 'none';
-        messageTextarea.classList.remove('is-invalid');
+        formularioInscricao.reset();
+        formularioInscricao.classList.remove('was-validated');
+        camposEmpreendedor.style.display = 'none';
+        contagemCaracteres.textContent = '0';
+        contagemInteresse.textContent = '0/3';
+        contagemInteresse.classList.add('bg-info');
+        contagemInteresse.classList.remove('bg-success');
+        erroInteresse.style.display = 'none';
+        textareaMensagem.classList.remove('is-invalid');
     }
 }
 
@@ -320,7 +317,7 @@ function resetForm() {
 // ============================================
 
 // Optional: Add phone formatting
-document.getElementById('phone').addEventListener('input', function(e) {
+document.getElementById('telefone').addEventListener('input', function(e) {
     let value = e.target.value.replace(/\D/g, '');
     
     if (value.length > 0) {
@@ -340,13 +337,8 @@ document.getElementById('phone').addEventListener('input', function(e) {
 // FORM SUBMISSION
 // ============================================
 
-form.addEventListener('submit', function(e) {
-    if (!validateForm()) {
-        e.preventDefault(); // Bloqueia envio se validação falhar
-        form.classList.add('was-validated');
-    }
-    // Se passou na validação, deixa o formulário submeter normalmente
-});
+// Remove prevent default - permitir envio normal do formulário
+// O formulário será enviado via POST para o PHP processar
 
 // ============================================
 // INITIALIZATION
@@ -356,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Formulário de Inscrição - TechConf 2026 carregado com sucesso!');
     
     // Remove was-validated class on input
-    const inputs = form.querySelectorAll('.form-control, .form-select');
+    const inputs = formularioInscricao.querySelectorAll('.form-control, .form-select');
     inputs.forEach(input => {
         input.addEventListener('input', function() {
             this.classList.remove('is-invalid');
