@@ -1,8 +1,8 @@
 <?php
-// Iniciando a conexão com o banco de dados para processar as inscrições dos participantes
+// Iniciando a conexão com o banco de dados
 require_once __DIR__ . '/config.php';
 
-// Definindo variáveis para gerenciar as mensagens de feedback ao usuário
+// Definindo variáveis
 $mensagem = '';
 $tipo_mensagem = '';
 
@@ -20,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $interesses = json_encode(array_values($interessesData));
     $mensagem_texto = trim($_POST['mensagem'] ?? '');
 
-    // Realizando validação básica dos campos obrigatórios para garantir dados completos
+    // Realizando validação básica dos campos obrigatórios
     if (empty($nome) || empty($email) || empty($telefone) || empty($cidade) || empty($tipo_participante)) {
         $mensagem = 'Por favor, preencha todos os campos obrigatórios!';
         $tipo_mensagem = 'danger';
     } else {
-        // Preparando a consulta SQL para inserir os dados da inscrição no banco de dados de forma segura
+        // Preparando a consulta SQL 
         $sql = "INSERT INTO inscricoes (nome, email, telefone, cidade, tipo_participante, interesses, mensagem) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Preparando os dados necessários para renderizar as opções nos campos do formulário usando loops
+// Preparando os dados necessários para renderizar as opções
 $tiposParticipantes = [
     'estudante' => 'Estudante',
     'profissional' => 'Profissional',
