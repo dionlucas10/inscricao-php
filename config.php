@@ -1,9 +1,9 @@
 <?php
-// Configurações de conexão com o banco de dados
+// Configurações essenciais para estabelecer uma conexão segura com o banco de dados MySQL
 $servername = "localhost";
 $username = "root";
 $password = "";
-$dbname = "tela_login"; // Altere para o nome do seu banco de dados
+$dbname = "tela_login"; // Por favor, ajuste este valor para corresponder ao nome do seu banco de dados específico
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 

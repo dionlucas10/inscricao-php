@@ -1,12 +1,12 @@
 <?php
-// Conexão com banco de dados
+// Iniciando a conexão com o banco de dados para processar as inscrições dos participantes
 require_once __DIR__ . '/config.php';
 
-// Variáveis para mensagens
+// Definindo variáveis para gerenciar as mensagens de feedback ao usuário
 $mensagem = '';
 $tipo_mensagem = '';
 
-// Processar formulário quando enviado
+// Processando o formulário de inscrição quando o usuário o submete
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = trim($_POST['nomeCompleto'] ?? '');
     $email = trim($_POST['email'] ?? '');
@@ -20,12 +20,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $interesses = json_encode(array_values($interessesData));
     $mensagem_texto = trim($_POST['mensagem'] ?? '');
 
-    // Validação básica
+    // Realizando validação básica dos campos obrigatórios para garantir dados completos
     if (empty($nome) || empty($email) || empty($telefone) || empty($cidade) || empty($tipo_participante)) {
         $mensagem = 'Por favor, preencha todos os campos obrigatórios!';
         $tipo_mensagem = 'danger';
     } else {
-        // Preparar inscrição
+        // Preparando a consulta SQL para inserir os dados da inscrição no banco de dados de forma segura
         $sql = "INSERT INTO inscricoes (nome, email, telefone, cidade, tipo_participante, interesses, mensagem) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Dados para renderizar com foreach
+// Preparando os dados necessários para renderizar as opções nos campos do formulário usando loops
 $tiposParticipantes = [
     'estudante' => 'Estudante',
     'profissional' => 'Profissional',
@@ -89,19 +89,19 @@ $cidades = [
 
 <body>
     <div class="container-fluid min-vh-100 d-flex flex-column">
-        <!-- Header -->
+        <!-- Cabeçalho  -->
         <header class="bg-gradient py-4 text-white">
             <div class="container text-center">
                 <img src="./assets/img/logo1.png" alt="Logo" class="logo-cabecalho mb-3">
             </div>
         </header>
 
-        <!-- Main Content -->
+        <!-- Conteúdo principal da página -->
         <main class="flex-grow-1 py-5">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
-                        <!-- Event Presentation -->
+                        <!-- Seção de apresentação do evento -->
                         <section class="card mb-5 shadow-sm border-0">
                             <div class="card-body p-4">
                                 <h2 class="card-title mb-3 text-primary">
@@ -163,7 +163,7 @@ $cidades = [
                             </div>
                         </section>
 
-                        <!-- Mensagem de Resposta -->
+                        <!-- Área para exibir mensagens de resposta ao usuário, como confirmação de inscrição ou erros -->
                         <?php if ($mensagem): ?>
                             <div class="alert alert-<?php echo $tipo_mensagem; ?> alert-dismissible fade show" role="alert">
                                 <?php echo $mensagem; ?>
@@ -171,7 +171,7 @@ $cidades = [
                             </div>
                         <?php endif; ?>
 
-                        <!-- Registration Form -->
+                        <!-- Formulário de inscrição -->
                         <section class="card shadow-sm border-0">
                             <div class="card-body p-4">
                                 <h2 class="card-title mb-4 text-primary">
@@ -320,15 +320,15 @@ $cidades = [
             </div>
         </main>
 
-        <!-- Footer -->
+        <!-- Rodapé -->
         <footer class="bg-dark text-white mt-5 py-4">
             <div class="container text-center">
-                <p class="mb-0">&copy; 2026 TechConf. Todos os direitos reservados.</p>
+                <p class="mb-0">&copy; 2026 FutureTech. Todos os direitos reservados.</p>
             </div>
         </footer>
     </div>
 
-    <!-- Modal de Resumo -->
+    <!-- Modal do resumo-->
     <div class="modal fade" id="modalResumo" tabindex="-1" aria-labelledby="rotuloModalResumo" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -339,7 +339,6 @@ $cidades = [
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="conteudoResumo">
-                    <!-- Preenchido pelo JavaScript -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Editar Inscrição</button>

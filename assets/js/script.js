@@ -1,8 +1,6 @@
-/* ============================================
-   FORMULÁRIO DE INSCRIÇÃO - INTERAÇÕES JAVASCRIPT
-   ============================================ */
 
-// Mapping for friendly display of values
+
+// Mapeamento para exibir os valores de forma amigável e compreensível ao usuário
 const displayMaps = {
   tiposParticipantes: {
     estudante: "Estudante",
@@ -29,7 +27,7 @@ const displayMaps = {
   },
 };
 
-// Elementos do DOM
+// DOM
 const formularioInscricao = document.getElementById("formularioInscricao");
 const tipoParticipanteSelect = document.getElementById("tipoParticipante");
 const camposEmpreendedor = document.getElementById("camposEmpreendedor");
@@ -42,26 +40,24 @@ const botaoResumo = document.getElementById("botaoResumo");
 const modalResumo = new bootstrap.Modal(document.getElementById("modalResumo"));
 const conteudoResumo = document.getElementById("conteudoResumo");
 
-// ============================================
-// EVENT LISTENERS
-// ============================================
 
-// Participant Type Change - Show/Hide Entrepreneur Fields
+// Escondendo o campo de empreendedor
+// Alteração do Tipo de Participante - Mostrar/Ocultar Campos Específicos para Empreendedores
 tipoParticipanteSelect.addEventListener("change", function () {
   if (this.value === "empreendedor") {
     camposEmpreendedor.style.display = "block";
-    // Exigir campos do empreendedor quando selecionado
+
     document.getElementById("nomeEmpresa").setAttribute("required", "");
     document.getElementById("areaAtuacao").setAttribute("required", "");
   } else {
     camposEmpreendedor.style.display = "none";
-    // Remover obrigatoriedade quando não for empreendedor
+
     document.getElementById("nomeEmpresa").removeAttribute("required");
     document.getElementById("areaAtuacao").removeAttribute("required");
   }
 });
 
-// Seleção de interesses - máximo 3
+// Seleção de Interesses, limitando a 3 seleções
 checkboxesInteresse.forEach((checkbox) => {
   checkbox.addEventListener("change", function () {
     const totalMarcados = document.querySelectorAll(
@@ -96,18 +92,18 @@ function atualizarContagemInteresse() {
   }
 }
 
-// Contador de caracteres da mensagem
+// Contador de Caracteres da Mensagem
 textareaMensagem.addEventListener("input", function () {
   const currentLength = this.value.length;
   contagemCaracteres.textContent = currentLength;
 
-  // Truncate if exceeds 500 characters
+  // 500 caracteres para respeitar o limite estabelecido
   if (currentLength > 500) {
     this.value = this.value.substring(0, 500);
     contagemCaracteres.textContent = "500";
   }
 
-  // Visual feedback
+  // Fornecendo feedback visual ao usuário sobre o limite de caracteres
   if (currentLength > 400) {
     this.classList.add("is-invalid");
   } else {
@@ -115,7 +111,7 @@ textareaMensagem.addEventListener("input", function () {
   }
 });
 
-// Summary Button
+// Botão de Resumo
 botaoResumo.addEventListener("click", function () {
   if (validateForm()) {
     displaySummary();
@@ -123,14 +119,11 @@ botaoResumo.addEventListener("click", function () {
   }
 });
 
-// ============================================
-// FORM VALIDATION
-// ============================================
+// Validação do Formulário 
 
 function validateForm() {
   const isValid = formularioInscricao.checkValidity() === false ? false : true;
 
-  // Custom validations
   const interestCheckboxCount = document.querySelectorAll(
     ".interesse-item:checked",
   ).length;
@@ -149,7 +142,7 @@ function validateForm() {
 
   erroInteresse.style.display = "none";
 
-  // Validate entrepreneur fields if entrepreneur is selected
+  // Validar campos específicos do empreendedor
   if (tipoParticipanteSelect.value === "empreendedor") {
     const companyName = document.getElementById("nomeEmpresa").value.trim();
     const businessArea = document.getElementById("areaAtuacao").value.trim();
@@ -168,28 +161,25 @@ function validateForm() {
   return true;
 }
 
-// ============================================
-// DISPLAY SUMMARY
-// ============================================
-
+// Exibição do Resumo 
 function displaySummary() {
-  // Get form values
+  // Obtendo os valores preenchidos
   const formData = new FormData(formularioInscricao);
   const data = Object.fromEntries(formData);
 
-  // Get selected interests as array
+  // Coletando os interesses selecionados
   const selectedInterests = Array.from(
     document.querySelectorAll(".interesse-item:checked"),
   )
     .map((checkbox) => displayMaps.interesses[checkbox.value])
     .join(", ");
 
-  // Get participant type display
+  // Obtendo a descrição amigável
   const participantTypeDisplay =
     displayMaps.tiposParticipantes[data.tipoParticipante];
   const cityDisplay = displayMaps.cidades[data.cidade];
 
-  // Build summary HTML
+  // Construindo o HTML do resumo para exibir as informações de forma organizada
   let summaryHTML = `
         <div class="resumo-sucesso">
             <i class="bi bi-check-circle-fill"></i>
@@ -226,7 +216,7 @@ function displaySummary() {
             </div>
     `;
 
-  // Add entrepreneur info if applicable
+  // Construindo seções adicionais para empreendedores
   if (data.tipoParticipante === "empreendedor") {
     summaryHTML += `
             <div class="resumo-item">
@@ -254,7 +244,6 @@ function displaySummary() {
         </div>
     `;
 
-  // Add message if provided
   if (data.mensagem && data.mensagem.trim()) {
     summaryHTML += `
             <div class="resumo-secao">
@@ -290,11 +279,8 @@ function displaySummary() {
   conteudoResumo.innerHTML = summaryHTML;
 }
 
-// ============================================
-// UTILITY FUNCTIONS
-// ============================================
 
-// Escape HTML to prevent XSS
+// Escape HTML para evitar XSS
 function escapeHtml(text) {
   const map = {
     "&": "&amp;",
@@ -306,7 +292,7 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, (m) => map[m]);
 }
 
-// Reset Form
+// Resetar o formulário
 function resetForm() {
   if (confirm("Tem certeza que deseja limpar todos os dados do formulário?")) {
     formularioInscricao.reset();
@@ -321,11 +307,7 @@ function resetForm() {
   }
 }
 
-// ============================================
-// PHONE FORMATTING
-// ============================================
-
-// Optional: Add phone formatting
+// Adcionaro o telefone formatado
 document.getElementById("telefone").addEventListener("input", function (e) {
   let value = e.target.value.replace(/\D/g, "");
 
@@ -342,23 +324,12 @@ document.getElementById("telefone").addEventListener("input", function (e) {
   e.target.value = value;
 });
 
-// ============================================
-// FORM SUBMISSION
-// ============================================
-
-// Remove prevent default - permitir envio normal do formulário
-// O formulário será enviado via POST para o PHP processar
-
-// ============================================
-// INITIALIZATION
-// ============================================
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log(
     "Formulário de Inscrição - FutureTech 2026 carregado com sucesso!",
   );
 
-  // Remove was-validated class on input
   const inputs = formularioInscricao.querySelectorAll(
     ".form-control, .form-select",
   );
