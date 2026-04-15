@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     $interesses = json_encode(array_values($interessesData));
     $mensagem_texto = trim($_POST['mensagem'] ?? '');
-    
+
     // Validação básica
     if (empty($nome) || empty($email) || empty($telefone) || empty($cidade) || empty($tipo_participante)) {
         $mensagem = 'Por favor, preencha todos os campos obrigatórios!';
@@ -28,14 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Preparar inscrição
         $sql = "INSERT INTO inscricoes (nome, email, telefone, cidade, tipo_participante, interesses, mensagem) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
-        
+
         $stmt = $conn->prepare($sql);
-        
+
         if ($stmt) {
             $stmt->bind_param('sssssss', $nome, $email, $telefone, $cidade, $tipo_participante, $interesses, $mensagem_texto);
-            
+
             if ($stmt->execute()) {
-                $mensagem = '✓ Inscrição realizada com sucesso! Obrigado por se inscrever na TechConf 2026!';
+                $mensagem = '✓ Inscrição realizada com sucesso! Obrigado por se inscrever na FutureTech 2026!';
                 $tipo_mensagem = 'success';
             } else {
                 $mensagem = 'Erro ao inscrever. Tente novamente mais tarde.';
@@ -78,19 +78,21 @@ $cidades = [
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechConf 2026 - Inscrição</title>
+    <title>FutureTech 2026 - Inscrição</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
     <div class="container-fluid min-vh-100 d-flex flex-column">
         <!-- Header -->
         <header class="bg-gradient py-4 text-white">
             <div class="container text-center">
-                <img src="./assets/img/logo1.png" alt="Logo TechConf" class="logo-cabecalho mb-3">
+                <img src="./assets/img/logo1.png" alt="Logo" class="logo-cabecalho mb-3">
             </div>
         </header>
 
@@ -105,9 +107,12 @@ $cidades = [
                                 <h2 class="card-title mb-3 text-primary">
                                     <i class="bi bi-info-circle"></i> Sobre o Evento
                                 </h2>
+                                <h2 class="empresa-titulo">FutureTech 2026</h2>
                                 <p class="card-text mb-3">
-                                    Bem-vindo à TechConf 2026! Uma conferência inovadora reunindo os melhores profissionais, 
-                                    empreendedores e entusiastas de tecnologia do Brasil.
+                                    Um evento que conecta inovação, tecnologia e futuro. 
+                                    Reunindo especialistas, empresas e entusiastas do Brasil inteiro, 
+                                    a conferência traz palestras, networking e experiências imersivas sobre as 
+                                    tendências que estão transformando o mundo.
                                 </p>
                                 <div class="row g-3">
                                     <div class="col-md-6">
@@ -160,10 +165,10 @@ $cidades = [
 
                         <!-- Mensagem de Resposta -->
                         <?php if ($mensagem): ?>
-                        <div class="alert alert-<?php echo $tipo_mensagem; ?> alert-dismissible fade show" role="alert">
-                            <?php echo $mensagem; ?>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
+                            <div class="alert alert-<?php echo $tipo_mensagem; ?> alert-dismissible fade show" role="alert">
+                                <?php echo $mensagem; ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
                         <?php endif; ?>
 
                         <!-- Registration Form -->
@@ -236,7 +241,7 @@ $cidades = [
                                                 <h5 class="card-title mb-3 text-info">
                                                     <i class="bi bi-briefcase"></i> Informações Adicionais - Empreendedor
                                                 </h5>
-                                                
+
                                                 <div class="mb-3">
                                                     <label for="nomeEmpresa" class="form-label fw-semibold">Nome da Empresa</label>
                                                     <input type="text" class="form-control" id="nomeEmpresa" name="nomeEmpresa" placeholder="Sua empresa">
@@ -253,7 +258,7 @@ $cidades = [
                                     <!-- Interesses -->
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold mb-3">
-                                            Interesses no Evento (máximo 3 *) 
+                                            Interesses no Evento (máximo 3 *)
                                             <span class="badge bg-info ms-2" id="contagemInteresse">0/3</span>
                                         </label>
                                         <div class="row g-2">
@@ -349,4 +354,5 @@ $cidades = [
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/script.js"></script>
 </body>
+
 </html>

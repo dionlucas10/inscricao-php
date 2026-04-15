@@ -1,6 +1,6 @@
-﻿# TechConf 2026 - Sistema de Inscrição
+﻿# FutureTech 2026 - Sistema de Inscrição
 
-Este repositório abriga uma aplicação de inscrição para a TechConf 2026. O objetivo do projeto é oferecer um fluxo de cadastro claro, acessível e seguro para participantes do evento, desde a apresentação inicial até a confirmação do registro.
+Este repositório abriga uma aplicação de inscrição para a FutureTech 2026. O objetivo do projeto é oferecer um fluxo de cadastro claro, acessível e seguro para participantes do evento, desde a apresentação inicial até a confirmação do registro.
 
 ## Visão Geral do Processo
 
@@ -49,10 +49,10 @@ O projeto espera um banco de dados instalado e acessível pelo servidor local. A
 
 ## Como Instalar e Executar
 
-1. Copie todos os arquivos para a pasta do servidor local, por exemplo, `C:\xampp\htdocs\login-project`.
+1. Copie todos os arquivos para a pasta do servidor local, por exemplo, `C:\xampp\htdocs\incri-project`.
 2. Crie o banco de dados MySQL e a tabela de inscrições.
 3. Atualize `config.php` com os dados corretos de conexão.
-4. Acesse `http://localhost/login-project` no navegador.
+4. Acesse `http://localhost/incri-project` no navegador.
 5. Preencha o formulário e envie a inscrição.
 
 ## Experiência do Usuário
@@ -77,8 +77,10 @@ O sistema adota práticas básicas de segurança e qualidade:
 
 O projeto demonstra um fluxo completo de inscrição que integra front-end e back-end de forma coesa. Ele enfatiza a clareza para o participante, a confiabilidade no processamento e a organização do código para facilitar manutenção futura.
 
-## Logo do Projeto
+## Minha Logo
 
-Abaixo está a logo que representa a identidade visual do evento:
+Minha identidade visual:
 
-![Logo TechConf 2026](assets/img/logo1.png)
+<p align="center">
+  <img src="assets/img/logo1.png" alt="Logo FutureTech 2026" width="200" />
+</p>
